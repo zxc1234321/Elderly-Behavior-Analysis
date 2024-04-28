@@ -11,6 +11,9 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+import os
+
+import environ
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -26,6 +29,10 @@ SECRET_KEY = 'django-insecure-7$4v(*ng7u&cy2y+ft_mtb6l152obhmnlw$l90+d2pq(89xc(a
 DEBUG = True
 
 ALLOWED_HOSTS = []
+
+# env 파일 로드
+environ.Env.read_env(os.path.join(BASE_DIR,'.env'))
+
 
 
 # Application definition
@@ -74,9 +81,15 @@ WSGI_APPLICATION = 'elderly_server.wsgi.application'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': BASE_DIR / 'db.sqlite3',
+    # }
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'elderly_server',
+        'USER': 'root',
+        'PASSWORD': os.environ.get("PASSWORD"),
     }
 }
 
