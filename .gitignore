@@ -231,3 +231,5 @@ pids
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 >>>>>>> 0d306a2 (Update: Nest.js로 변경)
+
+.env
