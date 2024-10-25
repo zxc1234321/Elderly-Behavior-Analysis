@@ -1,11 +1,15 @@
 // src/user/user.repository.ts
-import { EntityRepository, Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { UserEntity } from './user.entity';
+import { Injectable } from '@nestjs/common';
 
-@EntityRepository(UserEntity)
+@Injectable()
 export class UserRepository extends Repository<UserEntity> {
+  constructor(private dataSource: DataSource) {
+    super(UserEntity, dataSource.createEntityManager());
+  }
   // 이메일로 사용자 조회
-  async findByEmail(email: string): Promise<UserEntity | undefined> {
+  async findByEmail(email: string): Promise<UserEntity> {
     return await this.findOne({ where: { email } });
   }
 

@@ -7,16 +7,17 @@ import { UserEntity } from './user.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { mailerConfig } from '../config/mailer.config';
+import { UserRepository } from './user.repository';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([UserEntity]),
-    forwardRef(() =>AuthModule),
+    forwardRef(() => AuthModule),
     PassportModule,
     MailerModule.forRootAsync(new mailerConfig()),
   ],
-  exports: [UserService],
+  exports: [UserService, UserRepository],
   controllers: [UserController],
-  providers: [UserService],
+  providers: [UserService, UserRepository],
 })
 export class UserModule {}
