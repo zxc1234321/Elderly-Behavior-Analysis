@@ -1,4 +1,3 @@
-// src/user/user.service.ts
 import {
   Inject,
   Injectable,
@@ -24,6 +23,7 @@ export class UserService {
   // 사용자 생성
   async create(email: string, password: string): Promise<UserEntity> {
     const hashedPassword = await this.hashPassword(password);
+    const user = await this.isOK(email, hashedPassword);
     return await this.userRepository.createUser(email, hashedPassword);
   }
 
@@ -35,7 +35,8 @@ export class UserService {
   // 비밀번호 해시화
   async hashPassword(password: string): Promise<string> {
     const salt = await bcrypt.genSalt(10);
-    return await bcrypt.hash(password, salt);
+    const hashedPassword =  await bcrypt.hash(password, salt);
+    return hashedPassword;
   }
 
   // 비밀번호 변경
