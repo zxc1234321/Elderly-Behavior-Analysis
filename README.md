@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # 사용 데이터
 - 시니어 이상행동 영상
 - https://aihub.or.kr/aihubdata/data/view.do?currMenu=115&topMenu=100&aihubDataSe=realm&dataSetSn=167
@@ -12,7 +11,7 @@ YOLOv8
 - https://github.com/ultralytics/ultralytics
 
 백엔드
-- FastAPI
+- FastAPI, Nest.js
 
 프론트
 - vanilla js/HTML/css
