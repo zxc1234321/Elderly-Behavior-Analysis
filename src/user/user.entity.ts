@@ -33,7 +33,7 @@ export class UserEntity {
   role: string;
 
   @Column({ default: 'deactivated' })
-  @IsIn(['active', 'deactivated', 'banned'])
+  @IsIn(['active', 'deactivated'])
   status: string;
 
   @CreateDateColumn()
@@ -50,7 +50,7 @@ export class UserEntity {
     try {
       const salt = await bcrypt.genSalt(10);
       this.password = await bcrypt.hash(this.password, salt);
-    } catch (error) {
+    } catch (Error) {
       throw new Error('비밀번호를 암호화하는데 실패하였습니다.');
     }
   }
