@@ -1,12 +1,21 @@
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import useSignUpStore from '@/store/auth/useSignUpStore';
 
 const SignUpForm = () => {
   const navigate = useNavigate();
+  const { name, email, password, confirmPassword, setName, setEmail, setPassword, setConfirmPassword } = useSignUpStore();
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    navigate('/email-auth');
+    // 회원가입 정보를 확인하고 전송하는 로직 추가 가능
+    if (password === confirmPassword) {
+      // 예: 서버로 데이터를 전송하거나 처리 로직 작성
+      console.log({ name, email, password });
+      navigate('/email-auth');
+    } else {
+      alert('비밀번호가 일치하지 않습니다.');
+    }
   };
 
   return (
@@ -16,25 +25,34 @@ const SignUpForm = () => {
         <form onSubmit={handleSubmit}>
           <InputGroup>
             <InputTitle>이름</InputTitle>
-            <Input type="text" />
+            <Input type="text" value={name} onChange={(e) => setName(e.target.value)} />
           </InputGroup>
           <InputGroup>
             <InputTitle>이메일</InputTitle>
-            <Input type="email" />
+            <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
           </InputGroup>
           <InputGroup>
             <InputTitle>비밀번호</InputTitle>
-            <Input type="password" placeholder="대문자, 소문자, 숫자, 특수기호를 포함하여 8~15자입니다." />
+            <Input
+              type="password"
+              placeholder="대문자, 소문자, 숫자, 특수기호를 포함하여 8~15자입니다."
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
           </InputGroup>
           <InputGroup>
             <InputTitle>비밀번호 확인</InputTitle>
-            <Input type="password" />
+            <Input
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+            />
           </InputGroup>
           <SubmitButton type="submit" value="가입하기" />
         </form>
         <LoginPrompt>
           이미 계정이 있으신가요?
-          <StyledLink href="/logIn">로그인</StyledLink>
+          <StyledLink href="/login">로그인</StyledLink>
         </LoginPrompt>
       </SignUpWrapper>
     </SignUpContainer>
