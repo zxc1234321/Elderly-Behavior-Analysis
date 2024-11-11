@@ -9,12 +9,17 @@ import { MailerService } from '@nestjs-modules/mailer';
 import { AuthDTO } from '../auth/dto/authDTO.dto';
 import { JwtService } from '@nestjs/jwt';
 import { UserEntity } from './user.entity';
+import { AuthService } from '../auth/auth.service';
 
 @Injectable()
 export class UserService {
+  private generateToken(): string {
+    return Math.random().toString(36).substr(2);
+  }
   constructor(
     @Inject(UserRepository)
     private readonly userRepository: UserRepository,
+    private readonly authService: AuthService,
     private readonly mailerService: MailerService,
     private readonly jwtService: JwtService,
   ) {}
@@ -61,7 +66,19 @@ export class UserService {
   }
   // 이메일 인증
   async verifyEmail(userId: number): Promise<void> {
-    await this.userRepository.setEmailVerification(userId, true);
+    const user = await this.userRepository.findOne({ where: { userId: userId } });
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    const token = this.generateToken();
+    user.verificationToken = token;
+
+    // 데이터베이스에 저장
+    await this.userRepository.save(user);
+
+    // 이메일 전송
+    await this.authService.sendVerificationEmail(user.email, token);
   }
 
   // 비밀번호 해시화

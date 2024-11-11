@@ -24,6 +24,9 @@ export class UserEntity {
   @IsNotEmpty()
   password: string;
 
+  @Column({ nullable: true })
+  verificationToken: string;
+
   @Column({ default: false })
   @IsBoolean()
   emailVerified: boolean;

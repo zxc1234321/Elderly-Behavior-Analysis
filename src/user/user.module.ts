@@ -15,6 +15,7 @@ import { UserRepository } from './user.repository';
     forwardRef(() => AuthModule),
     PassportModule,
     MailerModule.forRootAsync(new mailerConfig()),
+    AuthModule,
   ],
   exports: [UserService, UserRepository],
   controllers: [UserController],

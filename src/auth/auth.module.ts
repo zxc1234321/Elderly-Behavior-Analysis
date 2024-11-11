@@ -11,12 +11,12 @@ import { JwtStrategy } from './security/passport.jwt';
     forwardRef(() => UserModule),
     JwtModule.register({
       secret: process.env.JWT_SECRET,
-      signOptions: { expiresIn: '300s' },
+      signOptions: { expiresIn: '60m' },
     }),
     PassportModule.register({ defaultStrategy: 'jwt' }),
   ],
   controllers: [AuthController],
   providers: [AuthService, JwtStrategy],
-  exports: [PassportModule, JwtStrategy, JwtModule],
+  exports: [PassportModule, JwtStrategy, JwtModule, AuthService],
 })
 export class AuthModule {}

@@ -38,14 +38,14 @@ export class UserRepository extends Repository<UserEntity> {
   }
 
   // 최초 이메일 인증 상태 변경
-  async setEmailVerification(userId: number, isVerified: boolean): Promise<void> {
-    const user = await this.findOne({ where: { userId: userId } });
-    if (!user) {
-      throw new NotFoundException('사용자를 찾을 수 없습니다.');
-    }
-    user.emailVerified = isVerified;
-    await this.save(user);
-  }
+  // async setEmailVerification(userId: number, isVerified: boolean): Promise<void> {
+  //   const user = await this.findOne({ where: { userId: userId } });
+  //   if (!user) {
+  //     throw new NotFoundException('사용자를 찾을 수 없습니다.');
+  //   }
+  //   user.emailVerified = isVerified;
+  //   await this.save(user);
+  // }
 
   // 이메일 변경
   async changeByEmail(userId: number, email: string, isVerified: boolean): Promise<any> {
