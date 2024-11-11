@@ -47,6 +47,8 @@ export class UserService {
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
+    console.log('Stored hashed password:', user.password);
+    console.log('Provided password:', password);
     if (!isMatch) {
       throw new UnauthorizedException('비밀번호가 일치하지 않습니다.');
     }
@@ -84,8 +86,7 @@ export class UserService {
   // 비밀번호 해시화
   async hashPassword(password: string): Promise<string> {
     const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
-    return hashedPassword;
+    return await bcrypt.hash(password, salt);
   }
 
   // 비밀번호 변경

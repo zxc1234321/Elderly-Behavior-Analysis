@@ -2,13 +2,11 @@ import {
   Body,
   ConflictException,
   Controller,
-  Get,
   Post,
-  Req,
-  UseGuards,
 } from '@nestjs/common';
+import * as bcrypt from 'bcrypt';
+
 import { AuthDTO } from '../auth/dto/authDTO.dto';
-import { AuthGuard } from '@nestjs/passport';
 import { UserRepository } from './user.repository';
 import { UserService } from './user.service';
 
@@ -18,6 +16,11 @@ export class UserController {
     private readonly userRepository: UserRepository,
     private readonly userService: UserService,
   ) {}
+
+  async hashPassword(password: string): Promise<string> {
+    const salt = await bcrypt.genSalt(10);
+    return await bcrypt.hash(password, salt);
+  }
   @Post('/signup')
   async signup(@Body() authDTO: AuthDTO.SignUp) {
     const { email, password } = authDTO;
@@ -30,17 +33,16 @@ export class UserController {
 
     // UserController에서 회원 생성 시 호출 부분 수정
     await this.userRepository.createUser(email, hashedPassword);
-
     return '회원가입성공';
   }
-  @UseGuards(AuthGuard('jwt'))
-  @Get('/')
-  async getProfile(@Req() req: any) {
-    const user = req.user;
-    return user;
-  }
-  @Post('/signin')
-  async signin(@Body() authDTO: AuthDTO.SignIn) {
-    return this.userService.signIn(authDTO);
-  }
+  // @UseGuards(AuthGuard('jwt'))
+  // @Get('/')
+  // async getProfile(@Req() req: any) {
+  //   const user = req.user;
+  //   return user;
+  // }
+  // @Post('/signin')
+  // async signin(@Body() authDTO: AuthDTO.SignIn) {
+  //   return this.userService.signIn(authDTO);
+  // }
 }
