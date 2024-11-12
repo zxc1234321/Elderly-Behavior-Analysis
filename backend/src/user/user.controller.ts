@@ -15,12 +15,9 @@ export class UserController {
   constructor(
     private readonly userRepository: UserRepository,
     private readonly userService: UserService,
-  ) {}
-
-  async hashPassword(password: string): Promise<string> {
-    const salt = await bcrypt.genSalt(10);
-    return await bcrypt.hash(password, salt);
+  ) {
   }
+
   @Post('/signup')
   async signup(@Body() authDTO: AuthDTO.SignUp) {
     const { email, password } = authDTO;
@@ -29,20 +26,13 @@ export class UserController {
     if (hasEmail) {
       throw new ConflictException('이미 사용중인 이메일 입니다.');
     }
-    const hashedPassword = await this.userService.hashPassword(password);
 
-    // UserController에서 회원 생성 시 호출 부분 수정
+    // 비밀번호 해싱
+    const hashedPassword = await this.userRepository.hashPassword(password);
+    console.log('Hashed Password (Signup):', hashedPassword); // 해싱된 비밀번호 로그
+
+    // 사용자 생성
     await this.userRepository.createUser(email, hashedPassword);
-    return '회원가입성공';
+    return '회원가입 성공';
   }
-  // @UseGuards(AuthGuard('jwt'))
-  // @Get('/')
-  // async getProfile(@Req() req: any) {
-  //   const user = req.user;
-  //   return user;
-  // }
-  // @Post('/signin')
-  // async signin(@Body() authDTO: AuthDTO.SignIn) {
-  //   return this.userService.signIn(authDTO);
-  // }
 }

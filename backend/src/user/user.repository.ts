@@ -1,17 +1,28 @@
 import { DataSource, Repository } from 'typeorm';
 import { UserEntity } from './user.entity';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import { AuthDTO } from '../auth/dto/authDTO.dto';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserRepository extends Repository<UserEntity> {
   constructor(private dataSource: DataSource) {
     super(UserEntity, dataSource.createEntityManager());
   }
-
+  // 비밀번호 해시화
+  async hashPassword(password: string): Promise<string> {
+    const salt = await bcrypt.genSalt(10);
+    return await bcrypt.hash(password, salt);
+  }
   // 사용자 생성
   async createUser(email: string, hashedPassword: string): Promise<UserEntity> {
     const user = this.create({ email, password: hashedPassword });
-    return await this.save(user);
+
+    console.log('Password Before Save:', user.password); // 저장 전 로그
+    const savedUser = await this.save(user);
+    console.log('Password After Save:', savedUser.password); // 저장 후 로그
+
+    return savedUser;
   }
 
   // 회원 탈퇴

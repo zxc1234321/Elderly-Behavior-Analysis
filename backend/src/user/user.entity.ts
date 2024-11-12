@@ -40,21 +40,25 @@ export class UserEntity {
   status: string;
 
   @CreateDateColumn()
-  createdAt: Date;
+  created_at: Date;
 
   @UpdateDateColumn()
-  updatedAt: Date;
+  updated_at: Date;
 
   @BeforeInsert()
   async beforeInsert() {
     if (!this.password) {
       throw new Error('비밀번호가 필요합니다.');
     }
-    try {
-      const salt = await bcrypt.genSalt(10);
-      this.password = await bcrypt.hash(this.password, salt);
-    } catch (Error) {
-      throw new Error('비밀번호를 암호화하는데 실패하였습니다.');
+
+    // 비밀번호가 이미 해싱된 상태인지 확인
+    if (!this.password.startsWith('$2b$')) {
+      try {
+        const salt = await bcrypt.genSalt(10);
+        this.password = await bcrypt.hash(this.password, salt);
+      } catch (error) {
+        throw new Error('비밀번호를 암호화하는데 실패하였습니다.');
+      }
     }
   }
 }

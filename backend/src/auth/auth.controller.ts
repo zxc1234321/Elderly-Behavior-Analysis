@@ -17,15 +17,27 @@ export class AuthController {
   @Post('/signin')
   async signin(@Body() authDTO: AuthDTO.SignIn) {
     const { email, password } = authDTO;
-    const user = await this.userService.isOK(email, password);
 
-    const payload = { userId: user.userId, email: user.email };
-    user.status = 'active';
-    const accessToken = await this.jwtService.sign(payload);
+    const user = await this.userRepository.findByEmail(email);
+    if (!user) {
+      throw new UnauthorizedException('이메일을 확인 해 주세요.');
+    }
 
-    return { accessToken };
-  }
-  @Get('verify')
+    console.log('Stored Hashed Password:', user.password);
+    console.log('Provided Password:', password);
+
+    const isSamePassword = await bcrypt.compare(password, user.password);
+    console.log('Password Match:', isSamePassword); // 로그로 비교 결과 출력
+
+    if (!isSamePassword) {
+      throw new UnauthorizedException('비밀번호를 확인 해 주세요.');
+    }
+
+    const payload = { userId: user.userId, role: user.role };
+    const accessToken = this.jwtService.sign(payload);
+
+    return { accessToken, userId: user.userId, role: user.role };
+  }  @Get('verify')
   async verifyEmail(@Query('token') token: string): Promise<string> {
     const isVerified = await this.authService.verifyToken(token);
     if (!isVerified) {
