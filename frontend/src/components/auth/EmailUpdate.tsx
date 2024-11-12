@@ -38,7 +38,7 @@ const EmailUpdate = () => {
         <form onSubmit={handleSubmit}>
           <InputGroup>
             <InputTitle>보호대상자</InputTitle>
-            <Input type="password" />
+            <Input type="text" />
           </InputGroup>
           <InputGroup>
             <InputTitle>보호대상자 생년월일</InputTitle>

@@ -1,20 +1,36 @@
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import axios from 'axios';
 import useSignUpStore from '@/store/auth/useSignUpStore';
 
 const SignUpForm = () => {
   const navigate = useNavigate();
   const { name, email, password, confirmPassword, setName, setEmail, setPassword, setConfirmPassword } = useSignUpStore();
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // 회원가입 정보를 확인하고 전송하는 로직 추가 가능
-    if (password === confirmPassword) {
-      // 예: 서버로 데이터를 전송하거나 처리 로직 작성
-      console.log({ name, email, password });
-      navigate('/email-auth');
-    } else {
+
+    // 비밀번호 일치 여부 확인
+    if (password !== confirmPassword) {
       alert('비밀번호가 일치하지 않습니다.');
+      return;
+    }
+
+    try {
+      // 서버에 회원가입 요청
+      const response = await axios.post('http://127.0.0.1:3000/user/signup', {
+        name,
+        email,
+        password,
+      });
+
+      console.log('회원가입 성공:', response.data);
+
+      // 이메일 인증 페이지로 이동
+      navigate('/email-auth');
+    } catch (error) {
+      console.error('회원가입 실패:', error);
+      alert('회원가입에 실패했습니다. 다시 시도해주세요.');
     }
   };
 

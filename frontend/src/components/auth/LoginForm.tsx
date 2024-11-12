@@ -1,15 +1,44 @@
 import { useState } from 'react';
 import { useAuthStore } from '@/store/auth/authStore';
 import styled from 'styled-components';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const LoginForm = () => {
   const [rememberMe, setRememberMe] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const { login } = useAuthStore();
+  const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const token = 'mock_token';
-    login(token);
+
+    // 유효성 검사: 이메일과 비밀번호가 비어있는지 확인
+    if (!email || !password) {
+      alert('이메일과 비밀번호를 입력해주세요.');
+      return;
+    }
+
+    try {
+      // 로그인 API 요청
+      const response = await axios.post('http://127.0.0.1:3000/auth/signin', {
+        email,
+        password,
+      });
+
+      // 서버에서 토큰을 받아와 로그인 처리
+      const { token } = response.data;
+      await login(token);  // 토큰을 스토어에 저장 후 navigate 실행
+
+      console.log('로그인 성공:', response.data);
+
+      // 로그인 성공 시 /admin으로 이동
+      navigate('/admin');
+    } catch (error) {
+      console.error('로그인 실패:', error);
+      alert('로그인에 실패했습니다. 아이디와 비밀번호를 확인하세요.');
+    }
   };
 
   return (
@@ -20,11 +49,21 @@ const LoginForm = () => {
         <form onSubmit={handleSubmit}>
           <InputGroup>
             <InputTitle>ID</InputTitle>
-            <Input type="text" />
+            <Input
+              type="text"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
           </InputGroup>
           <InputGroup>
             <InputTitle>비밀번호</InputTitle>
-            <Input type="password" />
+            <Input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
           </InputGroup>
           <Options>
             <CheckboxWrapper>
