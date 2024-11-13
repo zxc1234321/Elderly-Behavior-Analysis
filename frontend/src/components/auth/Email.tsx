@@ -1,12 +1,19 @@
+import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 const Email = () => {
   const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    navigate('/email-update');
+    try {
+      const email = (e.target as HTMLFormElement).email.value;
+      await axios.post('http://localhost:3000/auth/send-email-verification', { email });
+      navigate('/email-update'); // 성공 시 페이지 이동
+    } catch (error) {
+      console.error('이메일 인증 요청 실패:', error);
+    }
   };
 
   return (
@@ -17,7 +24,7 @@ const Email = () => {
         <form onSubmit={handleSubmit}>
           <InputGroup>
             <InputTitle>이메일</InputTitle>
-            <Input type="email" />
+            <Input type="email" name="email" required />
           </InputGroup>
           <SubmitButton type="submit" value="다음으로" />
         </form>

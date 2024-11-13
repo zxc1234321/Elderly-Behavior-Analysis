@@ -11,6 +11,7 @@ import { AuthModule } from './auth/auth.module';
     UserModule,
     ConfigModule.forRoot({
       isGlobal: true,
+      envFilePath: '.env',
     }),
     TypeOrmModule.forRoot({
       type: process.env.DB_TYPE as any,
