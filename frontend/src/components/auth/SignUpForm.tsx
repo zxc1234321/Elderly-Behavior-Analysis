@@ -9,13 +9,19 @@ const SignUpForm = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
+  
+    // 필수 입력값 확인
+    if (!name || !email || !password || !confirmPassword) {
+      alert('모든 필드를 입력해 주세요.');
+      return;
+    }
+  
     // 비밀번호 일치 여부 확인
     if (password !== confirmPassword) {
       alert('비밀번호가 일치하지 않습니다.');
       return;
     }
-
+  
     try {
       // 서버에 회원가입 요청
       const response = await axios.post('http://127.0.0.1:3000/user/signup', {
@@ -23,9 +29,9 @@ const SignUpForm = () => {
         email,
         password,
       });
-
+  
       console.log('회원가입 성공:', response.data);
-
+  
       // 이메일 인증 페이지로 이동
       navigate('/email-auth');
     } catch (error) {
