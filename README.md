@@ -39,10 +39,12 @@ YOLOv8
 이세민
 - 프론트엔드
 
+박진현, 김학규, 김신, 김진우, 박건
+- 라벨링 진행
 ---
 
 # 개발 기간
-- 2024.03 ~ 2024.10
+- 2024.03 ~ 2024.12
 ---
 <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
